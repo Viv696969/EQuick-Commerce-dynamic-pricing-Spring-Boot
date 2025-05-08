@@ -2,6 +2,9 @@ package com.vivekemipre.dynamicpricing.config;
 
 
 import com.vivekemipre.dynamicpricing.filter.JWTAuthenticationFilter;
+import com.vivekemipre.dynamicpricing.filter.JWTValidationFilter;
+import com.vivekemipre.dynamicpricing.filter.JwtAuthenticationProvider;
+import com.vivekemipre.dynamicpricing.filter.JwtAuthenticationToken;
 import com.vivekemipre.dynamicpricing.service.CustomUserService;
 import com.vivekemipre.dynamicpricing.util.JwtUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,9 @@ public class SecurityConfig {
     @Autowired
     private CustomUserService userService;
 
+    @Autowired
+    private JwtUtility jwtUtility;
+
 
     @Bean
     public BCryptPasswordEncoder getPasswordEncoder(){
@@ -42,8 +48,18 @@ public class SecurityConfig {
     }
 
     @Bean
+    public JwtAuthenticationProvider jwtAuthenticationProvider(){
+        return new JwtAuthenticationProvider(jwtUtility);
+    }
+
+
+
+    @Bean
     public AuthenticationManager getAuthenticationManager(){
-        return new ProviderManager(Arrays.asList(daoAuthenticationProvider()));
+        return new ProviderManager(Arrays.asList(
+                daoAuthenticationProvider(),
+                jwtAuthenticationProvider()
+        ));
     }
 
     @Bean
@@ -51,7 +67,7 @@ public class SecurityConfig {
 
 
         JWTAuthenticationFilter jwtAuthenticationFilter=new JWTAuthenticationFilter(jwtUtility,authenticationManager);
-
+        JWTValidationFilter jwtValidationFilter=new JWTValidationFilter(authenticationManager);
 
         http
                 .authorizeHttpRequests(
@@ -59,7 +75,9 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(csrf->csrf.disable())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtValidationFilter,JWTAuthenticationFilter.class);
+
         return http.build();
 
     }

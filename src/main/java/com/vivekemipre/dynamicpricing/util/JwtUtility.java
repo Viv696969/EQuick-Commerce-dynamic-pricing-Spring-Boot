@@ -2,9 +2,9 @@ package com.vivekemipre.dynamicpricing.util;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +30,20 @@ public class JwtUtility {
                 .setIssuedAt(new Date())
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String validateToken(String token){
+
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(signingKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (JwtException e) {
+            return null;
+        }
     }
 
 
