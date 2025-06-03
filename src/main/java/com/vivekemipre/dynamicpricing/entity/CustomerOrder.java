@@ -26,7 +26,7 @@ public class CustomerOrder {
     }
 
     @ManyToOne
-    private CustomUser customUser;
+    private CustomUser user;
 
     @CreationTimestamp
     @Column(updatable = false)

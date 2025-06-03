@@ -11,10 +11,10 @@ import java.security.Principal;
 @RequestMapping("/cart")
 public class CartController {
 
-    @GetMapping("/view")
-    public ResponseEntity<?> viewCart(Principal principal){
-
-    }
+//    @GetMapping("/view")
+//    public ResponseEntity<?> viewCart(Principal principal){
+//
+//    }
 
 
 

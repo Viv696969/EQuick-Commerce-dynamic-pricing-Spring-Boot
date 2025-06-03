@@ -6,11 +6,12 @@ import com.vivekemipre.dynamicpricing.entity.Product;
 import com.vivekemipre.dynamicpricing.repository.CartRepository;
 import com.vivekemipre.dynamicpricing.repository.CustomUserRepository;
 import com.vivekemipre.dynamicpricing.repository.ProductRepository;
+import com.vivekemipre.dynamicpricing.util.RedisUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class CartService {
@@ -24,12 +25,15 @@ public class CartService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private RedisUtility redisUtility;
+
     public List<Cart> getCartItems(String userId){
         CustomUser customUser=customUserRepository.findById(userId).get();
         return cartRepository.findByUser(customUser);
     }
 
-    public void addProductToCart(String productId,String userId,int quantity,double price){
+    public void addProductToCart(String productId,String userId,int quantity,double price,String city,int pinCode){
         CustomUser customUser=customUserRepository.findById(userId).get();
         Product product=productRepository.findById(productId).get();
 
@@ -43,9 +47,25 @@ public class CartService {
             cart.setQuantity(cart.getQuantity()+1);
             cartRepository.save(cart);
         }
+        redisUtility.increaseDemand(city,productId,pinCode,2);
 
     }
 
-    public void
+    public void deleteProductFromCart(String cartId){
+        Cart cart=cartRepository.findById(cartId).get();
+        cartRepository.delete(cart);
+
+    }
+
+    public void changeQuantity(String cartId,int quantityChange,String action){
+        Cart cart=cartRepository.findById(cartId).get();
+        if (action.equals("increment")){
+            cart.setQuantity(cart.getQuantity()+quantityChange);
+        }
+        else{
+            cart.setQuantity(cart.getQuantity()-quantityChange);
+        }
+    }
+
 
 }
