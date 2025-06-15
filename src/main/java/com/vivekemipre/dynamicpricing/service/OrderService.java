@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class OrderService {
+public class OrderService implements OrderServiceInterface{
 
     @Autowired
     private ProductRepository productRepository;
@@ -49,7 +49,7 @@ public class OrderService {
             orderItemRepository.save(
             OrderItems.builder().customerOrder(order).product(cartItem.getProduct()).price(cartItem.getPrice()).quantity(cartItem.getQuantity()).build()
             );
-            redisUtility.increaseDemand(city,cartItem.getProduct().getId(),pinCode,1);
+            redisUtility.increaseDemand(city,cartItem.getProduct().getId(),pinCode,3);
         }
         return order;
 
@@ -60,6 +60,12 @@ public class OrderService {
         List<OrderItems> orderItemsList=orderItemRepository.findByCustomerOrder(order);
         return Map.of("orderDetails",order,"orderedItems",orderItemsList);
 
+    }
+
+    public List<CustomerOrder> getUserOrders(String userId){
+
+        CustomUser user = customUserRepository.findById(userId).get();
+        return orderRepository.findByUser(user);
     }
 
 

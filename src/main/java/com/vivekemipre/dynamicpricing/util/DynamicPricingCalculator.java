@@ -5,16 +5,18 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 
 @Component
 public class DynamicPricingCalculator {
 
     private final double peakTimeMultiplier=1.102;
-    private final double osTypeMultiplier=1.105;
     private final double k = 0.1005; // sensitivity to demand
     private final double maxMultiplier = 1.5;
+    private final double ifEatingTimeMultiplier=1.10002;
+    private final double ifNotEatingTimeMultiplier=0.98;
 
-    public String categorizeTiming(LocalDateTime dateTime) {
+    private String categorizeTiming(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
 
         if (time.isAfter(LocalTime.of(4, 59)) && time.isBefore(LocalTime.of(10, 1))) {
@@ -33,13 +35,12 @@ public class DynamicPricingCalculator {
         return basePrice * multiplier;
     }
 
-    public double getProductDemandPrice(double productPrice,int currentDemand,String osType,boolean isPeakTime)
+    public double getProductDynamicPrice(double productPrice, int currentDemand, boolean isPeakTime, Map<String,Boolean> eatenAt)
     {
-        double demandedPrice= isPeakTime ? productPrice*peakTimeMultiplier : productPrice;
-
-        demandedPrice=osType.toLowerCase().contains("mac") || osType.toLowerCase().contains("ios") ? demandedPrice*osTypeMultiplier:demandedPrice;
-
-        return calculateDynamicPriceSigmoid(demandedPrice,currentDemand);
+        double dynamicPrice= isPeakTime ? productPrice*peakTimeMultiplier : productPrice;
+        dynamicPrice=calculateDynamicPriceSigmoid(dynamicPrice,currentDemand);
+        dynamicPrice*=eatenAt.get(categorizeTiming(LocalDateTime.now()))?ifEatingTimeMultiplier:ifNotEatingTimeMultiplier;
+        return  dynamicPrice;
     }
 
 

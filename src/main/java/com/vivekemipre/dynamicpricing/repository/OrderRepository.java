@@ -4,8 +4,10 @@ import com.vivekemipre.dynamicpricing.entity.CustomUser;
 import com.vivekemipre.dynamicpricing.entity.CustomerOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface OrderRepository extends JpaRepository<CustomerOrder,String> {
 
-    CustomerOrder findByUser(CustomUser user);
+    List<CustomerOrder> findByUser(CustomUser user);
 
 }

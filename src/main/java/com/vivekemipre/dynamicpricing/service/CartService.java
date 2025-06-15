@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @Service
-public class CartService {
+public class CartService implements CartServiceInterface {
 
     @Autowired
     private CartRepository cartRepository;
@@ -28,11 +28,13 @@ public class CartService {
     @Autowired
     private RedisUtility redisUtility;
 
+    @Override
     public List<Cart> getCartItems(String userId){
         CustomUser customUser=customUserRepository.findById(userId).get();
         return cartRepository.findByUser(customUser);
     }
 
+    @Override
     public void addProductToCart(String productId,String userId,int quantity,double price,String city,int pinCode){
         CustomUser customUser=customUserRepository.findById(userId).get();
         Product product=productRepository.findById(productId).get();
@@ -51,12 +53,13 @@ public class CartService {
 
     }
 
+    @Override
     public void deleteProductFromCart(String cartId){
         Cart cart=cartRepository.findById(cartId).get();
         cartRepository.delete(cart);
-
     }
 
+    @Override
     public void changeQuantity(String cartId,int quantityChange,String action){
         Cart cart=cartRepository.findById(cartId).get();
         if (action.equals("increment")){

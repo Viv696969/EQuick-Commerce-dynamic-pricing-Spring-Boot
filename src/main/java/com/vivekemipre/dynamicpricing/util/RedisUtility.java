@@ -21,7 +21,7 @@ public class RedisUtility {
     private final long ttl=10;
 
     private int getPinCodeBucket(int pinCode){
-        return ( (pinCode / this.pinCodeBucketSize)) * pinCodeBucketSize;
+        return  (pinCode / this.pinCodeBucketSize) * pinCodeBucketSize;
     }
 
     public String getKey(String city,String productId,int pinCode){

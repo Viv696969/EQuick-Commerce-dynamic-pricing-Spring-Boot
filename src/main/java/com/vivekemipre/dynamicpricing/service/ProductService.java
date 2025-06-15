@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,27 +28,15 @@ public class ProductService {
     @Autowired
     private DynamicPricingCalculator dynamicPricingCalculator;
 
-    private double getDynamicPrice(double basePrice,Map<String,Boolean> eatenAt,int currentDemand,String osType,boolean isPeekTime){
-        double dynamicPrice=dynamicPricingCalculator.getProductDemandPrice(basePrice,currentDemand,osType,true);
-        if (eatenAt.get(dynamicPricingCalculator.categorizeTiming(LocalDateTime.now()))){
-            dynamicPrice*=1.10002;
-        }
-        else {
-            dynamicPrice *= 0.98;
-        }
-        return  dynamicPrice;
-    }
-
-
-    public ProductResponse viewProduct(String productId,String city,int pinCode,String osType){
+    public ProductResponse viewProduct(String productId,String city,int pinCode){
         int currentDemand=redisUtility.getProductDemand(city, productId, pinCode);
         Product product=productRepository.findById(productId).get();
-        double dynamicPrice=getDynamicPrice(product.getPrice(),product.getEatenAt(),currentDemand,osType,true);
+        double dynamicPrice= dynamicPricingCalculator.getProductDynamicPrice(product.getPrice(), currentDemand, true, product.getEatenAt());
         redisUtility.increaseDemand(city,productId,pinCode,1);
         return new ProductResponse(product,dynamicPrice);
     }
 
-    public List<ProductResponse>  getProducts(int page, int size, String city, int pinCode, String osType){
+    public List<ProductResponse>  getProducts(int page, int size, String city, int pinCode){
         Pageable pageable = PageRequest.of(page, size);
         Page<Product> products = productRepository.findAll(pageable);
 
@@ -64,8 +51,9 @@ public class ProductService {
                 .map(product -> {
                     String key = redisUtility.getKey(city,product.getId(), pinCode);
                     int demand = priceMap.getOrDefault(key,0);
-                    double dynamicPrice=getDynamicPrice(product.getPrice(),product.getEatenAt(),demand,osType,true);
+                    double dynamicPrice= dynamicPricingCalculator.getProductDynamicPrice(product.getPrice(), demand, true, product.getEatenAt());
                     return new ProductResponse(product, dynamicPrice);
+
                 })
 
                 .toList();
