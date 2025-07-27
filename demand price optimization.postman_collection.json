@@ -1,0 +1,346 @@
+{
+	"info": {
+		"_postman_id": "6a8f45af-78bb-4b75-ae68-08d627461dd1",
+		"name": "demand price optimization",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28037262"
+	},
+	"item": [
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\r\n    \"productName\": \"Methi Thepla (4 pcs)\",\r\n    \"productDescription\": \"Gujarati flatbreads with fenugreek leaves\",\r\n    \"productPrice\": 55,\r\n    \"productBrand\": \"Gujju Rasoi\",\r\n    \"eatingTimes\": [\"breakfast\", \"lunch\"]\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/product/v1/add-product",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"v1",
+								"add-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "view product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/product/v1/view-product/c873f72d-c9b0-4b4d-8883-24e564271015/mumbai/400002",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"v1",
+								"view-product",
+								"c873f72d-c9b0-4b4d-8883-24e564271015",
+								"mumbai",
+								"400002"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/product/v1/view-products/2/5/mumbai/400002",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"v1",
+								"view-products",
+								"2",
+								"5",
+								"mumbai",
+								"400002"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "add to cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":\"8f495357-5183-4cbe-bde6-5faa6ba63ac0\",\r\n    \"city\":\"mumbai\",\r\n    \"pinCode\":400002,\r\n    \"price\":66,\r\n    \"productId\":\"c873f72d-c9b0-4b4d-8883-24e564271015\"\r\n\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/cart/v1/add-to-cart",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"v1",
+								"add-to-cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "view cart",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/cart/v1/view-cart/8f495357-5183-4cbe-bde6-5faa6ba63ac0",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"v1",
+								"view-cart",
+								"8f495357-5183-4cbe-bde6-5faa6ba63ac0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change-item-quantity",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cartItemId\":\"ixRw8m0KiB9ZRMA2ssqOE\",\r\n    \"quantityChange\":1,\r\n    \"action\":\"decrement\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/cart/v1/change-item-quantity",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"v1",
+								"change-item-quantity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cartId\":\"RuRrzRRI3tCHwxigc7hGn\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/cart/v1/delete-item",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"cart",
+								"v1",
+								"delete-item"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":\"8f495357-5183-4cbe-bde6-5faa6ba63ac0\",\r\n    \"customerAddress\":\"Girgaon,Charni Road\",\r\n    \"city\":\"mumbai\",\r\n    \"pinCode\":400002,\r\n    \"totalPrice\":103\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/order/v1/place-order",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"v1",
+								"place-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "userId",
+									"value": "8f495357-5183-4cbe-bde6-5faa6ba63ac0",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/order/v1/get-orders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"v1",
+								"get-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get order details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "userId",
+									"value": "8f495357-5183-4cbe-bde6-5faa6ba63ac0",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/order/v1/order-details/Kt4Wr1WpafIGL-sdSm-9c",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"v1",
+								"order-details",
+								"Kt4Wr1WpafIGL-sdSm-9c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"abc@gmail.com\",\r\n    \"password\":\"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/auth/register",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "localhost:8080",
+			"type": "default"
+		}
+	]
+}
