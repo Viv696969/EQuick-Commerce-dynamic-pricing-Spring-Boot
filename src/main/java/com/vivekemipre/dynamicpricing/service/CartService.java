@@ -59,7 +59,7 @@ public class CartService implements CartServiceInterface {
             Cart cart=cartRepository.findById(cartId).get();
             cartRepository.delete(cart);
         } catch (Exception e) {
-            
+
         }
     }
 
