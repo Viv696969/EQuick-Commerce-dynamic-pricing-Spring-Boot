@@ -49,7 +49,7 @@ public class OrderService implements OrderServiceInterface{
             orderItemRepository.save(
             OrderItems.builder().customerOrder(order).product(cartItem.getProduct()).price(cartItem.getPrice()).quantity(cartItem.getQuantity()).build()
             );
-            redisUtility.increaseDemand(city,cartItem.getProduct().getId(),pinCode,3);
+            redisUtility.increaseDemand(city,cartItem.getProduct().getProductName(),pinCode,3);
         }
         return order;
 

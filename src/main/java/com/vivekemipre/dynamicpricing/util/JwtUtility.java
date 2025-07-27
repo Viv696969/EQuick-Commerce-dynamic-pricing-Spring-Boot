@@ -4,7 +4,6 @@ package com.vivekemipre.dynamicpricing.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,6 @@ public class JwtUtility {
     }
 
     public String validateToken(String token){
-
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(signingKey)

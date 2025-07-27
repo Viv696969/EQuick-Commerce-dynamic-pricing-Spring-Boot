@@ -1,5 +1,6 @@
 package com.vivekemipre.dynamicpricing.service;
 
+import com.vivekemipre.dynamicpricing.dto.PagedResponse;
 import com.vivekemipre.dynamicpricing.dto.ProductResponse;
 import com.vivekemipre.dynamicpricing.entity.Product;
 import com.vivekemipre.dynamicpricing.repository.ProductRepository;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ProductService {
+public class ProductService implements ProductServiceInterface {
 
 
     @Autowired
@@ -29,34 +30,43 @@ public class ProductService {
     private DynamicPricingCalculator dynamicPricingCalculator;
 
     public ProductResponse viewProduct(String productId,String city,int pinCode){
-        int currentDemand=redisUtility.getProductDemand(city, productId, pinCode);
         Product product=productRepository.findById(productId).get();
+        int currentDemand=redisUtility.getProductDemand(city, product.getProductName(), pinCode);
         double dynamicPrice= dynamicPricingCalculator.getProductDynamicPrice(product.getPrice(), currentDemand, true, product.getEatenAt());
-        redisUtility.increaseDemand(city,productId,pinCode,1);
+        redisUtility.increaseDemand(city,product.getProductName(),pinCode,1);
         return new ProductResponse(product,dynamicPrice);
     }
 
-    public List<ProductResponse>  getProducts(int page, int size, String city, int pinCode){
+    public PagedResponse<ProductResponse> getProducts(int page, int size, String city, int pinCode){
         Pageable pageable = PageRequest.of(page, size);
         Page<Product> products = productRepository.findAll(pageable);
 
         List<String> keys = products.stream()
-                .map(product -> redisUtility.getKey(city,product.getId(),pinCode ))
+                .map(product -> redisUtility.getKey(city,product.getProductName(),pinCode ))
                 .toList();
 
         Map<String, Integer> priceMap = redisUtility.getProductDemandBatched(keys);
 
-        return products.stream()
 
+        List<ProductResponse> productResponses = products.stream()
                 .map(product -> {
-                    String key = redisUtility.getKey(city,product.getId(), pinCode);
-                    int demand = priceMap.getOrDefault(key,0);
-                    double dynamicPrice= dynamicPricingCalculator.getProductDynamicPrice(product.getPrice(), demand, true, product.getEatenAt());
+                    String key = redisUtility.getKey(city, product.getProductName(), pinCode);
+                    int demand = priceMap.getOrDefault(key, 0);
+                    double dynamicPrice = dynamicPricingCalculator.getProductDynamicPrice(
+                            product.getPrice(), demand, true, product.getEatenAt());
                     return new ProductResponse(product, dynamicPrice);
-
                 })
-
                 .toList();
+
+        return new PagedResponse<ProductResponse>(
+                productResponses,
+                products.getNumber(),
+                products.getSize(),
+                products.getTotalElements(),
+                products.getTotalPages(),
+                products.hasNext(),
+                products.hasPrevious()
+        );
 
 
     }

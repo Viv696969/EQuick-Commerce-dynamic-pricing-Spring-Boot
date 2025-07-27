@@ -35,39 +35,49 @@ public class CartService implements CartServiceInterface {
     }
 
     @Override
-    public void addProductToCart(String productId,String userId,int quantity,double price,String city,int pinCode){
+    public void addProductToCart(String productId,String userId,double price,String city,int pinCode){
         CustomUser customUser=customUserRepository.findById(userId).get();
         Product product=productRepository.findById(productId).get();
 
         Cart cart=cartRepository.findByUserAndProduct(customUser,product);
         if(cart==null){
             Cart cart1=Cart.builder()
-                            .product(product).user(customUser).price(price).quantity(quantity).build();
+                            .product(product).user(customUser).price(price).quantity(1).build();
             cartRepository.save(cart1);
         }
         else{
             cart.setQuantity(cart.getQuantity()+1);
             cartRepository.save(cart);
         }
-        redisUtility.increaseDemand(city,productId,pinCode,2);
+        redisUtility.increaseDemand(city,product.getProductName(),pinCode,2);
 
     }
 
     @Override
     public void deleteProductFromCart(String cartId){
-        Cart cart=cartRepository.findById(cartId).get();
-        cartRepository.delete(cart);
+        try {
+            Cart cart=cartRepository.findById(cartId).get();
+            cartRepository.delete(cart);
+        } catch (Exception e) {
+            
+        }
     }
 
     @Override
-    public void changeQuantity(String cartId,int quantityChange,String action){
+    public Cart changeQuantity(String cartId,int quantityChange,String action){
         Cart cart=cartRepository.findById(cartId).get();
         if (action.equals("increment")){
             cart.setQuantity(cart.getQuantity()+quantityChange);
         }
         else{
             cart.setQuantity(cart.getQuantity()-quantityChange);
+
         }
+        if(cart.getQuantity()<=0){
+            cartRepository.delete(cart);
+            return null;
+        }
+        return cartRepository.save(cart);
     }
 
 

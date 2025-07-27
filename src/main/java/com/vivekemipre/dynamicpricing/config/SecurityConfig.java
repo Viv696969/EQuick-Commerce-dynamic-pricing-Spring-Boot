@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -38,7 +38,7 @@ public class SecurityConfig {
     public BCryptPasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
-//
+
 //    @Bean
 //    public DaoAuthenticationProvider daoAuthenticationProvider(){
 //        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -62,25 +62,28 @@ public class SecurityConfig {
 //        ));
 //    }
 //
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager, JwtUtility jwtUtility) throws Exception {
-//
-//
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http
+//                                                   AuthenticationManager authenticationManager,
+//                                                   JwtUtility jwtUtility
+    ) throws Exception {
+
+
 //        JWTAuthenticationFilter jwtAuthenticationFilter=new JWTAuthenticationFilter(jwtUtility,authenticationManager);
 //        JWTValidationFilter jwtValidationFilter=new JWTValidationFilter(authenticationManager);
-//
-//        http
+
+        http
 //                .authorizeHttpRequests(
 //                        auth->auth.requestMatchers("/auth/register","/test/test").permitAll().anyRequest().authenticated()
 //                )
-//                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//        .csrf(csrf->csrf.disable())
+                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(csrf->csrf.disable());
 //                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 //                .addFilterAfter(jwtValidationFilter,JWTAuthenticationFilter.class);
-//
-//        return http.build();
-//
-//    }
+
+        return http.build();
+
+    }
 
 
 }

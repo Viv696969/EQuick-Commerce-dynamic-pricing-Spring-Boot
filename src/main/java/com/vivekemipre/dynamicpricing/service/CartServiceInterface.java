@@ -9,9 +9,9 @@ public interface CartServiceInterface {
 
     List<Cart> getCartItems(String userId);
 
-    void addProductToCart(String productId,String userId,int quantity,double price,String city,int pinCode);
+    void addProductToCart(String productId,String userId,double price,String city,int pinCode);
 
     void deleteProductFromCart(String cartId);
 
-    void changeQuantity(String cartId,int quantityChange,String action);
+    Cart changeQuantity(String cartId,int quantityChange,String action);
 }

@@ -10,9 +10,9 @@ import java.util.Map;
 @Component
 public class DynamicPricingCalculator {
 
-    private final double peakTimeMultiplier=1.102;
-    private final double k = 0.1005; // sensitivity to demand
-    private final double maxMultiplier = 1.5;
+    private final double peakTimeMultiplier=1.1002;
+    private final double k = 0.100005; // sensitivity to demand
+    private final double maxMultiplier = 1.25;
     private final double ifEatingTimeMultiplier=1.10002;
     private final double ifNotEatingTimeMultiplier=0.98;
 

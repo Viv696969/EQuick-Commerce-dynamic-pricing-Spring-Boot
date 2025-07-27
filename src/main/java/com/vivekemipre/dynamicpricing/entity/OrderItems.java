@@ -16,7 +16,7 @@ public class OrderItems {
 
     @PrePersist
     private void  setId(){
-        if (this.id!=null){
+        if (this.id==null){
             this.id= NanoIdUtils.randomNanoId();
         }
     }

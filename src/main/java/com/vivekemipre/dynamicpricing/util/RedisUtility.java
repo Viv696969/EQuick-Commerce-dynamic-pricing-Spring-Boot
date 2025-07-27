@@ -24,13 +24,13 @@ public class RedisUtility {
         return  (pinCode / this.pinCodeBucketSize) * pinCodeBucketSize;
     }
 
-    public String getKey(String city,String productId,int pinCode){
-       return city+"-"+getPinCodeBucket(pinCode)+"-"+productId;
+    public String getKey(String city,String productName,int pinCode){
+       return city+"-"+getPinCodeBucket(pinCode)+"-"+productName;
     }
 
     @Async
-    public void increaseDemand(String city,String productId,int pinCode,int count){
-        String key=getKey(city,productId,pinCode);
+    public void increaseDemand(String city,String productName,int pinCode,int count){
+        String key=getKey(city,productName,pinCode);
 
         String demand=redisTemplate.opsForValue().get(key);
         Long currentTtl = redisTemplate.getExpire(key, TimeUnit.MINUTES);
@@ -58,8 +58,8 @@ public class RedisUtility {
 
     }
 
-    public int getProductDemand(String city,String productId,int pinCode){
-        String key=getKey(city,productId,pinCode);
+    public int getProductDemand(String city,String productName,int pinCode){
+        String key=getKey(city,productName,pinCode);
         String demand=redisTemplate.opsForValue().get(key);
         return demand!=null?Integer.parseInt(demand):0;
     }
