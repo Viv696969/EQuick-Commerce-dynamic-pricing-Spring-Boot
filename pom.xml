@@ -135,6 +135,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>dynamic-pricing-backend-spring-boot</finalName>
 	</build>
 
 </project>
